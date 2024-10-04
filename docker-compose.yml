@@ -1,0 +1,94 @@
+#version: '3.8'
+
+services:
+  #  nginx:
+  #    image: nginx:1.25.4-alpine
+  #    volumes:
+  #      - "./docker/sites:/etc/nginx/sites-enabled"
+  #    ports:
+  #      - "8070:80"
+    swoole:
+      build:
+        context: .
+        dockerfile: docker/swoole/php_cli_8_openswoole.dockerfile
+        platforms:
+          - linux/amd64
+      volumes:
+        - ".:/var/www/html"
+        - "./docker/swoole/supervisor.conf:/etc/supervisor/conf.d/supervisor-server.conf"
+        #- "./Caddyfile:/etc/caddy/Caddyfile"
+        #- "./frankenphp2:/usr/local/bin"
+      ports:
+        - "8010:8000"
+      privileged: true
+  #
+  #    roadrunner:
+#      build:
+#        context: .
+#        dockerfile: docker/roadrunner/php_cli_8_roadrunner.dockerfile
+#        platforms:
+#          - linux/amd64
+#      volumes:
+#        - ".:/var/www/html"
+#        - "./docker/roadrunner/supervisor.conf:/etc/supervisor/conf.d/supervisor-server.conf"
+#        #- "./Caddyfile:/etc/caddy/Caddyfile"
+#        #- "./frankenphp2:/usr/local/bin"
+#      ports:
+#        - "8011:8000"
+#
+    frankenphp:
+      build:
+        context: .
+        dockerfile: docker/frankenphp/php_cli_8_frankenphp.dockerfile
+        platforms:
+          - linux/amd64
+      volumes:
+        - ".:/var/www/html"
+        - "./docker/frankenphp/supervisor.conf:/etc/supervisor/conf.d/supervisor-server.conf"
+        #- "./Caddyfile:/etc/caddy/Caddyfile"
+        #- "./frankenphp2:/usr/local/bin"
+      ports:
+        - "8012:8000"
+#
+#    server:
+#      build:
+#        context: .
+#  #      dockerfile: docker/php_cli_8_cli_server.dockerfile
+#        dockerfile: docker/php_cli_8_zts_server.dockerfile
+#        platforms:
+#          - linux/amd64
+#      volumes:
+#        - ".:/var/www/html"
+#        - "./docker/supervisor.conf:/etc/supervisor/conf.d/supervisor-server.conf"
+#      ports:
+#        - "8010:8000"
+#        - "8011:9000"
+#        - "8012:10000"
+
+#  openswoole:
+#    build:
+#      context: .
+#      dockerfile: ./docker/php_cli_8_openswoole.dockerfile
+#    volumes:
+#      - ".:/var/www/html"
+#      - "./Caddyfile:/etc/caddy/Caddyfile"
+#      #- "./frankenphp2:/usr/local/bin"
+#    ports:
+#      - "8020:80"
+
+#  redis:
+#    image: redis:6.2
+#    ports:
+#      - "6379:6379"
+#
+    rabbitmq:
+      build:
+        context: .
+        dockerfile: ./docker/rabbitmq.dockerfile
+      hostname: rabbitmq-server
+      environment:
+        RABBITMQ_USER: "user"
+        RABBITMQ_PASSWORD: "password"
+      ports:
+        - "5672:5672"
+        - "15672:15672"

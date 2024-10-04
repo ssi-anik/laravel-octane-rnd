@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: ./docker/php_cli_8.dockerfile
+    volumes:
+      - ".:/var/www/html"
+      - "${HOME}/Library/Caches/composer:/root/.composer/cache" # Mounts local composer cache to the container
+    ports:
+      - "80:80"
+
+  worker:
+    container_name: worker
+    build:
+      context: .
+      dockerfile: ./docker/php_cli_8.dockerfile
+    volumes:
+      - ".:/var/www/html"
+      - "${HOME}/Library/Caches/composer:/root/.composer/cache" # Mounts local composer cache to the container
+
+  redis:
+    container_name: redis
+    image: redis:6.2
+    ports:
+      - "6380:6379"
+
+  rabbitmq:
+    container_name: rabbitmq
+    build:
+      context: .
+      dockerfile: ./docker/rabbitmq.dockerfile
+    hostname: rabbitmq-server
+    environment:
+      RABBITMQ_USER: "new-user"
+      RABBITMQ_PASSWORD: "new-password"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
